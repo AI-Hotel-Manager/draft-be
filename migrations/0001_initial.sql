@@ -7,21 +7,22 @@ CREATE TABLE users (
 );
 
 CREATE TABLE room_types (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,         -- e.g., "Single", "Double", "Suite"
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
     description TEXT
 );
 
 CREATE TABLE rooms (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT,                                  -- Optional (e.g., "Ocean View Suite")
     room_number TEXT NOT NULL,
-    type_id INT REFERENCES room_types(id),
+    name TEXT,
+    room_type_id UUID REFERENCES room_types(id),
     capacity INT NOT NULL,
-    bed_type TEXT,                              -- e.g., "Queen", "2 Single Beds", "King + Sofa"
-    amenities TEXT[],                           -- PostgreSQL array of amenities
-    rating NUMERIC(2, 1) CHECK (rating >= 0 AND rating <= 5),  -- optional guest rating
+    bed_type TEXT,
+    amenities TEXT[],
+    rating NUMERIC(2, 1),
     price_per_night NUMERIC(10, 2) NOT NULL,
+    image_name TEXT,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -35,17 +36,14 @@ CREATE TABLE reservations (
     total_price NUMERIC(10, 2),
     status TEXT DEFAULT 'confirmed',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     CONSTRAINT valid_date_range CHECK (check_out > check_in)
 );
 
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    role TEXT CHECK (role IN ('user', 'assistant')),
-    content TEXT,
+    user_id UUID REFERENCES users(id),
+    role TEXT CHECK (role IN ('user', 'assistant')) NOT NULL,
+    content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE rooms
-ADD COLUMN image_name TEXT;

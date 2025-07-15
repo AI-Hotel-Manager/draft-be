@@ -10,5 +10,5 @@ class UserModel(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     full_name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
-    phone = Column(String, nullable=True)
+    phone = Column(String)
     created_at = Column(TIMESTAMP, server_default=func.now())
