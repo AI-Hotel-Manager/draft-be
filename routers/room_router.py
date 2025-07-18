@@ -15,8 +15,9 @@ async def post_room(data: RoomCreate, db: AsyncSession = Depends(get_db)):
     return room
     
 
-@router.get("/{room_id}", response_model=Room)
-async def get_by_id(room_id: str, db: AsyncSession = Depends(get_db)):
+@router.get("/by-id/{room_id}", response_model=Room)
+async def get_by_id(room_id: str, db = Depends(get_db)):
+    print("adi be")
     room = await RoomManager.select_by_id(room_id, db)
     return room
 

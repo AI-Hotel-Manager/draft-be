@@ -29,15 +29,28 @@ CREATE TABLE rooms (
 
 CREATE TABLE reservations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    
+    -- Optional registered user
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Required room reference
     room_id UUID REFERENCES rooms(id) ON DELETE CASCADE,
+
+    -- Contact info for non-registered users
+    guest_name TEXT,
+    guest_email TEXT,
+    guest_phone TEXT,
+
+    -- Reservation details
     check_in DATE NOT NULL,
     check_out DATE NOT NULL,
     total_price NUMERIC(10, 2),
     status TEXT DEFAULT 'confirmed',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     CONSTRAINT valid_date_range CHECK (check_out > check_in)
 );
+
 
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
